@@ -1,8 +1,13 @@
 from ObjectGenerator import ObjectGenerator
+from MergeSort import MergeSort
 
-og = ObjectGenerator(100)
+og = ObjectGenerator(1000)
 
 objectList = og.generate()
 
-for object in objectList:
+ms = MergeSort()
+
+sortedObjectList = ms.sort(objectList)
+
+for object in sortedObjectList:
     print(object.value)
