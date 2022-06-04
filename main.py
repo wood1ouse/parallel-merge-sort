@@ -1,13 +1,14 @@
 from ObjectGenerator import ObjectGenerator
-from MergeSort import MergeSort
+from ParallelMergeSort import ParallelMergeSort
 
-og = ObjectGenerator(1000)
+if __name__ == '__main__':
+    og = ObjectGenerator(1000)
 
-objectList = og.generate()
+    objectList = og.generate()
 
-ms = MergeSort()
+    pms = ParallelMergeSort()
 
-sortedObjectList = ms.sort(objectList)
+    sortedObjectList = pms.sort(objectList, 4)
 
-for object in sortedObjectList:
-    print(object.value)
+    for object in sortedObjectList:
+        print(object.value)
