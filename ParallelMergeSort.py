@@ -1,3 +1,4 @@
+from DataService import DataService
 from MergeSort import MergeSort
 from PerformanceMeasure import PerformanceMeasure
 
@@ -5,6 +6,9 @@ from contextlib import contextmanager
 from multiprocessing import Manager, Pool
 
 class ParallelMergeSort():
+    def __init__(self):
+        self.ms = MergeSort()
+
     @contextmanager
     def process_pool(self, size):
         pool = Pool(size)
@@ -13,23 +17,19 @@ class ParallelMergeSort():
         pool.join()
 
     def combineSortedChunks(self, shareableList, array):
-        ms = MergeSort()
-        shareableList.append(ms.sortChunks(array))
+        shareableList.append(self.ms.sortChunks(array))
 
     def combineMergedChunks(self, shareableList, array_part_left, array_part_right):
-        ms = MergeSort()
-        shareableList.append(ms.mergeChunks(array_part_left, array_part_right))
+        shareableList.append(self.ms.mergeChunks(array_part_left, array_part_right))
 
     def sort(self, array, processes):
-        m1 = PerformanceMeasure(f"Sorting in {processes} threads")
+        m1 = PerformanceMeasure(f"Sorting time ({processes}-core)")
 
         step = int(len(array) / processes)
 
         manager = Manager()
         shared = manager.list()
 
-
-        print(f"{m1.name}: {m1.elapsedTime()}")
 
         with self.process_pool(size=processes) as pool:
             for n in range(processes):
@@ -39,8 +39,9 @@ class ParallelMergeSort():
                     chunk = array[n * step:]
                 pool.apply_async(self.combineSortedChunks, (shared, chunk))
 
+        m1.writeTime()
 
-        m2 = PerformanceMeasure("Merging")
+        m2 = PerformanceMeasure(f"Merging time ({processes}-core)")
 
         while len(shared) > 1:
             with self.process_pool(size=processes) as pool:
@@ -49,6 +50,6 @@ class ParallelMergeSort():
                     (shared, shared.pop(0), shared.pop(0))
                 )
 
-        print(f"{m2.name}: {m2.elapsedTime()}")
+        m2.writeTime()
 
         return shared[0]
