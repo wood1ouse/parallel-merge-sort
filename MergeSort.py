@@ -1,17 +1,17 @@
 class MergeSort:
-    def sortChunks(self, array):
+    def sort_chunks(self, array):
         if len(array) <= 1:
             return array
 
         middle = int(len(array) / 2)
         left = array[0:middle]
         right = array[middle:]
-        left = self.sortChunks(left)
-        right = self.sortChunks(right)
+        left = self.sort_chunks(left)
+        right = self.sort_chunks(right)
 
-        return self.mergeChunks(left, right)
+        return self.merge_chunks(left, right)
 
-    def mergeChunks(self, left, right):
+    def merge_chunks(self, left, right):
         result = []
         left = left[:]
         right = right[:]
